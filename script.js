@@ -17,79 +17,14 @@ score2El.textContent = 0;
 //intially hide the dice
 diceEl.classList.add('hidden');
 
-//The total score of players
-let total = [0, 0];
-//points earned now
-let count1 = 0;
-//to identify the active player
-let activePlayer = 0;
-//adding the background color to the active player
-document
-  .querySelector(`.player--${activePlayer}`)
-  .classList.add('player--active');
-//rolling the dice functinality
-const clickRoll = function () {
-  //random number
-  const random = Math.trunc(Math.random() * 6) + 1;
-  //display the relevant image
-  diceEl.classList.remove('hidden');
-  diceEl.src = `dice-${random}.png`;
-  //update score
-  if (random !== 1) {
-    count1 += random;
-    document.getElementById(`current--${activePlayer}`).textContent = count1;
-  } else {
-    //when get 1
-    count1 = 0;
-    document.getElementById(`current--${activePlayer}`).textContent = count1;
-    //remove the active color from current player
-    // document
-    //   .querySelector(`.player--${activePlayer}`)
-    //   .classList.remove('player--active');
-    // //change the active player
-    // activePlayer === 0 ? (activePlayer = 1) : (activePlayer = 0);
-    // //give him the active player color
-    // document
-    //   .querySelector(`.player--${activePlayer}`)
-    //   .classList.add('player--active');
-
-    activePlayer === 0 ? (activePlayer = 1) : (activePlayer = 0);
-    player1.classList.toggle('player--active');
-    player2.classList.toggle('player--active');
-  }
-};
-
-btnRoll.addEventListener('click', clickRoll);
-
-//holding the value function
-const clickHold = function () {
-  total[activePlayer] += count1;
-  count1 = 0;
-  document.getElementById(`current--${activePlayer}`).textContent = count1;
-
-  if (total[activePlayer] < 100) {
-    //chnage the total score of the active player
-    document.getElementById(`score--${activePlayer}`).textContent =
-      total[activePlayer];
-    //remove the active color from current player
-    document
-      .querySelector(`.player--${activePlayer}`)
-      .classList.remove('player--active');
-    //change active player if he did not win
-    activePlayer === 0 ? (activePlayer = 1) : (activePlayer = 0);
-    //give  the new active player color
-    document
-      .querySelector(`.player--${activePlayer}`)
-      .classList.add('player--active');
-  } else {
-    console.log(activePlayer + 'Wins');
-  }
-};
-
-btnHold.addEventListener('click', clickHold);
+//playing or not
+let playing, total, count1, activePlayer;
 
 //new game functinality
-const clickNewGame = function () {
+const init = function () {
+  activePlayer = 0;
+  //play
+  playing = true;
   //set current count to 0
   count1 = 0;
   // set total counts to zero
@@ -104,10 +39,96 @@ const clickNewGame = function () {
   score2El.textContent = 0;
   //reset the active player color to player 1
   activePlayer = 0;
-  if (player2.classList.contains('player--active')) {
-    player1.classList.add('player--active');
-    player2.classList.remove('player--active');
+  //no need of if conditions js will only remove if exists
+  player2.classList.remove('player--active');
+  player2.classList.remove('player--winner');
+  player1.classList.remove('player--winner');
+
+  player1.classList.add('player--active');
+};
+
+init();
+//switching the active player
+const switchActive = function () {
+  activePlayer === 0 ? (activePlayer = 1) : (activePlayer = 0);
+  player1.classList.toggle('player--active');
+  player2.classList.toggle('player--active');
+};
+
+//rolling the dice functinality
+const clickRoll = function () {
+  if (playing) {
+    //random number
+    const random = Math.trunc(Math.random() * 6) + 1;
+    //display the relevant image
+    diceEl.classList.remove('hidden');
+    diceEl.src = `dice-${random}.png`;
+    //update score
+    if (random !== 1) {
+      count1 += random;
+      document.getElementById(`current--${activePlayer}`).textContent = count1;
+    } else {
+      //when get 1
+      count1 = 0;
+      document.getElementById(`current--${activePlayer}`).textContent = count1;
+      //remove the active color from current player
+      // document
+      //   .querySelector(`.player--${activePlayer}`)
+      //   .classList.remove('player--active');
+      // //change the active player
+      // activePlayer === 0 ? (activePlayer = 1) : (activePlayer = 0);
+      // //give him the active player color
+      // document
+      //   .querySelector(`.player--${activePlayer}`)
+      //   .classList.add('player--active');
+
+      switchActive();
+    }
   }
 };
 
-btnNew.addEventListener('click', clickNewGame);
+btnRoll.addEventListener('click', clickRoll);
+
+//holding the value function
+const clickHold = function () {
+  if (playing) {
+    total[activePlayer] += count1;
+    count1 = 0;
+    document.getElementById(`current--${activePlayer}`).textContent = count1;
+
+    if (total[activePlayer] < 20) {
+      //chnage the total score of the active player
+      document.getElementById(`score--${activePlayer}`).textContent =
+        total[activePlayer];
+      //this palyer swiching parts repeats twice so make a function
+      //remove the active color from current player
+      // document
+      //   .querySelector(`.player--${activePlayer}`)
+      //   .classList.remove('player--active');
+      // //change active player if he did not win
+      // activePlayer === 0 ? (activePlayer = 1) : (activePlayer = 0);
+      // //give  the new active player color
+      // document
+      //   .querySelector(`.player--${activePlayer}`)
+      //   .classList.add('player--active');
+      switchActive();
+    } else {
+      //console.log(activePlayer + 'Wins');
+      //add the wining style to the wining player
+      document
+        .querySelector(`.player--${activePlayer}`)
+        .classList.remove('player--active');
+      document
+        .querySelector(`.player--${activePlayer}`)
+        .classList.add('player--winner');
+      document.getElementById(`score--${activePlayer}`).textContent = 'Won!';
+      diceEl.classList.add('hidden');
+
+      playing = false;
+    }
+  }
+};
+
+btnHold.addEventListener('click', clickHold);
+
+btnNew.addEventListener('click', init);
