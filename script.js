@@ -102,7 +102,8 @@ const clickNewGame = function () {
 
   score1El.textContent = 0;
   score2El.textContent = 0;
-  //reset the active player to player 1
+  //reset the active player color to player 1
+  activePlayer = 0;
   if (player2.classList.contains('player--active')) {
     player1.classList.add('player--active');
     player2.classList.remove('player--active');
