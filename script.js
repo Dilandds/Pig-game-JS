@@ -12,10 +12,16 @@ const btnHold = document.querySelector('.btn--hold');
 //update elements to initial values
 score1El.textContent = 0;
 score2El.textContent = 0;
+//intially hide the dice
 diceEl.classList.add('hidden');
 
+//The total score of players
+let total = [0, 0];
+//points earned now
 let count1 = 0;
+//to identify the active player
 let activePlayer = 0;
+//adding the background color to the active player
 document
   .querySelector(`.player--${activePlayer}`)
   .classList.add('player--active');
@@ -44,3 +50,20 @@ const clickRoll = function () {
 };
 
 btnRoll.addEventListener('click', clickRoll);
+
+//holding the value function
+const clickHold = function () {
+  total[activePlayer] += count1;
+  count1 = 0;
+  document.getElementById(`current--${activePlayer}`).textContent = count1;
+
+  if (total[activePlayer] < 100) {
+    document.getElementById(`score--${activePlayer}`).textContent =
+      total[activePlayer];
+    activePlayer === 0 ? (activePlayer = 1) : (activePlayer = 0);
+  } else {
+    console.log(activePlayer + 'Wins');
+  }
+};
+
+btnHold.addEventListener('click', clickHold);
