@@ -9,5 +9,5 @@ Winning score is set to 20
 ![game-logic](pig-game-flowchart.png)
 
 ## Game play
-![game-1](1.png)
-![game-2](2.png)
+![game-1](images/1.png)
+![game-2](images/2.png)
